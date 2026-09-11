@@ -122,7 +122,12 @@ class NotchBridge:
                 event = json.loads(line.decode("utf-8").strip())
                 for cb in self.event_callbacks:
                     try:
-                        cb(event)
+                        if asyncio.iscoroutinefunction(cb):
+                            asyncio.create_task(cb(event))
+                        else:
+                            res = cb(event)
+                            if asyncio.iscoroutine(res):
+                                asyncio.create_task(res)
                     except Exception as e:
                         logger.error("Error in event callback: %s", e)
             except Exception as e:

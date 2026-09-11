@@ -96,10 +96,78 @@ async def start_daemon():
     console.print("[bold magenta]       SOPHIA AI ASSISTANT ONLINE         [/bold magenta]")
     console.print("[bold magenta]==========================================[/bold magenta]\n")
     console.print("[cyan]Dynamic Island floating notch UI is active.[/cyan]")
-    console.print("[cyan]Say '[bold white]Sophia[/bold white]' to summon your personal assistant, or trigger commands via terminal.[/cyan]\n")
+    console.print("[cyan]Say '[bold white]Sophia[/bold white]' to summon your personal assistant, or click the notch island to expand controls.[/cyan]")
+    console.print("[dim]Sophia stays on standby mute until summoned, keeping YouTube, calls, and music 100% free.[/dim]\n")
 
     await sophia_agent.initialize()
-    await wake_listener.start(on_wake=lambda: asyncio.create_task(notch_bridge.set_state("listening")))
+
+    from sophia.audio.gemini_live import gemini_live_session
+
+    is_mic_muted = False
+
+    async def handle_wake():
+        """Handles wake word or manual activation: pauses wake listener and starts Gemini Live."""
+        if gemini_live_session.is_running:
+            return
+
+        logger.info("Engaging conversational session with Gemini Live (Aoede)...")
+        wake_listener.stop()
+        try:
+            await gemini_live_session.start_session()
+        except Exception as e:
+            logger.error("Error during live session: %s", e)
+        finally:
+            await notch_bridge.set_state("idle")
+            await notch_bridge.set_status("Ready (Muted)")
+            if not is_mic_muted:
+                await wake_listener.start(on_wake=handle_wake)
+
+    async def handle_island_event(event: dict):
+        """Processes events from Swift Dynamic Island."""
+        nonlocal is_mic_muted
+        event_type = event.get("event")
+        logger.info("Dynamic Island event: %s", event)
+
+        if event_type == "island_toggled":
+            is_expanded = event.get("isExpanded", False)
+            if is_expanded:
+                if not gemini_live_session.is_running:
+                    asyncio.create_task(handle_wake())
+            else:
+                if gemini_live_session.is_running:
+                    gemini_live_session.stop()
+
+        elif event_type == "dismiss_clicked":
+            if gemini_live_session.is_running:
+                gemini_live_session.stop()
+            await notch_bridge.set_state("idle")
+            await notch_bridge.set_status("Ready (Muted)")
+
+        elif event_type == "mic_toggled":
+            is_mic_muted = event.get("isMuted", False)
+            if is_mic_muted:
+                wake_listener.stop()
+                if gemini_live_session.is_running:
+                    gemini_live_session.stop()
+                await notch_bridge.set_status("Mic Muted")
+                logger.info("Microphone muted by user via Dynamic Island.")
+            else:
+                await wake_listener.start(on_wake=handle_wake)
+                await notch_bridge.set_status("Ready (Muted)")
+                logger.info("Microphone unmuted by user via Dynamic Island.")
+
+        elif event_type == "vision_toggled":
+            vision_active = event.get("isActive", True)
+            logger.info("Screen vision toggled: %s", vision_active)
+
+    # Connect to Dynamic Island overlay and set initial idle/muted state
+    await notch_bridge.connect()
+    notch_bridge.register_callback(handle_island_event)
+    await notch_bridge.set_state("idle")
+    await notch_bridge.set_status("Ready (Muted)")
+
+    # Start wake listener in standby
+    await wake_listener.start(on_wake=handle_wake)
 
     # Keep alive
     while True:

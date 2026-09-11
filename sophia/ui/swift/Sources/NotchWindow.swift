@@ -39,8 +39,8 @@ public class NotchWindow: NSPanel {
         guard let screen = NSScreen.main else { return }
 
         let screenFrame = screen.frame
-        let targetWidth: CGFloat = expanded ? 420 : 240
-        let targetHeight: CGFloat = expanded ? 140 : 38
+        let targetWidth: CGFloat = expanded ? 440 : 250
+        let targetHeight: CGFloat = expanded ? 175 : 38
 
         // Calculate center X (directly aligned with MacBook notch/camera)
         let targetX = screenFrame.origin.x + (screenFrame.width - targetWidth) / 2.0

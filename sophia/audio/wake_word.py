@@ -134,6 +134,11 @@ class NeuralWakeWordListener:
 
     async def start(self, on_wake: Optional[Callable[[], None]] = None):
         """Starts the neural wake word listener in the background."""
+        if self.is_listening:
+            if on_wake:
+                self.callback = on_wake
+            return
+
         if not self._ensure_model():
             logger.warning("Falling back to synthetic wake detection.")
             self.callback = on_wake
@@ -146,8 +151,9 @@ class NeuralWakeWordListener:
 
     def stop(self):
         self.is_listening = False
-        if self._task:
+        if self._task and not self._task.done():
             self._task.cancel()
+        self._task = None
         logger.info("Sophia Wake Word listener stopped.")
 
 
