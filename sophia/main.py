@@ -136,6 +136,10 @@ def main():
     cmd_p = subparsers.add_parser("ask", help="Send a command directly to Sophia")
     cmd_p.add_argument("text", help="Command or query text")
 
+    # live command
+    live_p = subparsers.add_parser("live", help="Start full-duplex conversational session with Gemini Live (Aoede Voice)")
+    live_p.add_argument("--voice", default="Aoede", help="Voice persona: Aoede (charming), Kore (poised)")
+
     args = parser.parse_args()
 
     if args.command == "test":
@@ -144,6 +148,12 @@ def main():
         asyncio.run(run_gcp_bootstrap(args.project_id, args.project_number))
     elif args.command == "start":
         asyncio.run(start_daemon())
+    elif args.command == "live":
+        from sophia.audio.gemini_live import GeminiLiveSession
+        session = GeminiLiveSession(voice_name=args.voice)
+        console.print(f"\n[bold magenta]=== Starting Gemini Live Native Audio ({args.voice} Voice) ===[/bold magenta]")
+        console.print("[cyan]Speak into your microphone naturally. Say 'exit' or press Ctrl+C to stop.[/cyan]\n")
+        asyncio.run(session.start_session())
     elif args.command == "wake":
         asyncio.run(wake_listener.trigger_synthetic_wake())
     elif args.command == "ask":

@@ -29,6 +29,10 @@ run:
 	@echo "==> Starting Sophia Assistant Daemon & Dynamic Island..."
 	$(SOPHIA) start
 
+live:
+	@echo "==> Starting Gemini Live Real-Time Native Audio Session (Aoede Voice)..."
+	$(SOPHIA) live
+
 clean:
 	@echo "==> Cleaning build artifacts and caches..."
 	rm -rf sophia/ui/swift/.build

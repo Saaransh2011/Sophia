@@ -33,10 +33,11 @@ class GCPConfig(BaseModel):
     )
     gemini_model: str = Field(default="gemini-2.5-pro")
     gemini_flash_model: str = Field(default="gemini-2.5-flash")
-    live_model: str = Field(default="gemini-2.5-pro")
-    tts_voice_name: str = Field(default="en-US-Journey-F")  # Google Cloud premier conversational neural voice
+    live_model: str = Field(default="gemini-live-2.5-flash-native-audio")
+    tts_voice_name: str = Field(default="en-US-Journey-F")
     tts_language_code: str = Field(default="en-US")
-    voice_name: str = Field(default="Aoede")
+    voice_name: str = Field(default="Aoede")  # Beautiful, charming, poised female voice
+    live_voice_name: str = Field(default="Aoede")
 
 
 class AudioConfig(BaseModel):
