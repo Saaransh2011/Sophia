@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "sophia"
+version = "0.1.0"
+description = "Sophia: Sophisticated Open Platform, Highly Integrated Application"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Sophia Team" }
+]
+dependencies = [
+    "google-genai>=2.23.0",
+    "google-cloud-speech>=2.40.0",
+    "google-cloud-texttospeech>=2.37.0",
+    "google-cloud-vision>=3.15.0",
+    "pydantic>=2.10.0",
+    "rich>=13.0.0",
+    "websockets>=13.0",
+    "aiohttp>=3.10.0",
+    "requests>=2.31.0",
+    "numpy>=2.0.0",
+    "scipy>=1.14.0",
+    "psutil>=6.0.0",
+    "watchdog>=5.0.0"
+]
+
+[project.scripts]
+sophia = "sophia.main:main"

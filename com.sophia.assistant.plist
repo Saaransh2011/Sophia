@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.sophia.assistant</string>
+    <key>ProgramArguments</key>
+    <array>
+        <string>/Users/anupam/Downloads/Sophia/.venv/bin/sophia</string>
+        <string>start</string>
+    </array>
+    <key>WorkingDirectory</key>
+    <string>/Users/anupam/Downloads/Sophia</string>
+    <key>RunAtLoad</key>
+    <true/>
+    <key>KeepAlive</key>
+    <true/>
+    <key>StandardOutPath</key>
+    <string>/Users/anupam/.sophia/logs/daemon.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/anupam/.sophia/logs/daemon_err.log</string>
+</dict>
+</plist>

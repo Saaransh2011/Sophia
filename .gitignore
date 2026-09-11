@@ -1,0 +1,72 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+
+# Distribution / packaging
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Swift / Xcode builds
+.build/
+*.xcodeproj
+*.xcworkspace
+xcuserdata/
+.swiftpm/
+
+# macOS system files
+.DS_Store
+.AppleDouble
+.LSOverride
+Icon
+._*
+
+# Sophia runtime caches and sockets
+*.sock
+*.db
+*.db-journal
+*.db-wal
+*.blend
+*.blend1
+*.jpg
+*.jpeg
+*.png
+*.wav
+*.mp3
+
+# Credentials & Secrets
+credentials/
+*.json
+!Package.swift
+!pyproject.toml
+!docker-compose.yml
+secret*.txt
+*.key
+*.pem
+.env
+.env.*
+
+# Logs
+logs/
+*.log

@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  sophia-core:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sophia_core
+    restart: unless-stopped
+    volumes:
+      - sophia_data:/root/.sophia
+      - ./sophia:/app/sophia
+    environment:
+      - GCP_PROJECT_ID=${GCP_PROJECT_ID:-}
+      - GCP_PROJECT_NUMBER=${GCP_PROJECT_NUMBER:-}
+      - GOOGLE_APPLICATION_CREDENTIALS=/root/.sophia/credentials/service_account.json
+    command: ["test"]
+
+volumes:
+  sophia_data:
+    driver: local
