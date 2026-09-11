@@ -77,3 +77,29 @@ class SophiaConfig(BaseModel):
 
 # Global singleton
 config = SophiaConfig()
+
+
+def get_genai_client():
+    """Initializes and returns the modern Google GenAI client supporting Vertex AI and Service Accounts."""
+    from google import genai
+
+    cred_file = Path(config.gcp.credentials_path)
+    if cred_file.exists():
+        from google.oauth2 import service_account
+        creds = service_account.Credentials.from_service_account_file(
+            str(cred_file),
+            scopes=["https://www.googleapis.com/auth/cloud-platform"]
+        )
+        return genai.Client(
+            vertexai=True,
+            project=config.gcp.project_id,
+            location=config.gcp.region,
+            credentials=creds
+        )
+
+    api_key = os.environ.get("GEMINI_API_KEY")
+    if api_key:
+        return genai.Client(api_key=api_key)
+
+    return genai.Client()
+

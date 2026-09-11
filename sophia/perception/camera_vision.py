@@ -62,10 +62,10 @@ class CameraVision:
             return "Camera feed is currently unavailable or requires permission."
 
         try:
-            from google import genai
+            from sophia.config import get_genai_client
             from google.genai import types
 
-            client = genai.Client()
+            client = get_genai_client()
             with open(img, "rb") as f:
                 image_bytes = f.read()
 

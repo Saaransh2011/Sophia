@@ -144,8 +144,8 @@ print(f"[Sophia] Rocket model successfully built and saved to {output_path}")
     async def _generate_gemini_reply(self, user_prompt: str) -> str:
         """Generates conversational response using Gemini."""
         try:
-            from google import genai
-            client = genai.Client()
+            from sophia.config import get_genai_client
+            client = get_genai_client()
             response = client.models.generate_content(
                 model=config.gcp.gemini_model,
                 contents=[
