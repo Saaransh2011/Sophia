@@ -8,6 +8,7 @@ import argparse
 import asyncio
 import logging
 import sys
+from typing import Optional
 from rich.console import Console
 from rich.table import Table
 
@@ -105,15 +106,26 @@ async def start_daemon():
 
     is_mic_muted = False
 
-    async def handle_wake():
+    # Auto-adjust input volume if attenuated by macOS
+    try:
+        import subprocess
+        res = subprocess.run(["osascript", "-e", "input volume of (get volume settings)"], capture_output=True, text=True)
+        vol = int(res.stdout.strip()) if res.stdout.strip().isdigit() else 0
+        if vol < 75:
+            subprocess.run(["osascript", "-e", "set volume input volume 85"], capture_output=True)
+            logger.info("Auto-adjusted macOS input volume to 85%% (was %d%%).", vol)
+    except Exception:
+        pass
+
+    async def handle_wake(initial_prompt: Optional[str] = None):
         """Handles wake word or manual activation: pauses wake listener and starts Gemini Live."""
         if gemini_live_session.is_running:
             return
 
-        logger.info("Engaging conversational session with Gemini Live (Aoede)...")
+        logger.info("Engaging conversational session with Gemini Live (%s)...", gemini_live_session.voice_name)
         wake_listener.stop()
         try:
-            await gemini_live_session.start_session()
+            await gemini_live_session.start_session(initial_prompt=initial_prompt)
         except Exception as e:
             logger.error("Error during live session: %s", e)
         finally:
@@ -132,7 +144,7 @@ async def start_daemon():
             is_expanded = event.get("isExpanded", False)
             if is_expanded:
                 if not gemini_live_session.is_running:
-                    asyncio.create_task(handle_wake())
+                    asyncio.create_task(handle_wake(initial_prompt="Greet your creator Saaransh in one brief sentence and ask how you may assist him."))
             else:
                 if gemini_live_session.is_running:
                     gemini_live_session.stop()

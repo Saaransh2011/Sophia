@@ -152,13 +152,21 @@ class GeminiLiveSession:
                     chunk = await loop.run_in_executor(None, mic_queue.get, True, 0.4)
                     if chunk:
                         pcm_arr = np.frombuffer(chunk, dtype=np.int16)
-                        energy = np.sqrt(np.mean(pcm_arr.astype(np.float32)**2))
-                        if energy > 450:
+                        max_val = np.max(np.abs(pcm_arr))
+                        # Adaptive AGC boost for Bluetooth / AirPods microphones
+                        if 0 < max_val < 7000:
+                            gain = min(4.5, 16000.0 / max(max_val, 100))
+                            pcm_boosted = np.clip(pcm_arr.astype(np.float32) * gain, -32768, 32767).astype(np.int16)
+                        else:
+                            pcm_boosted = pcm_arr
+
+                        energy = np.sqrt(np.mean(pcm_boosted.astype(np.float32)**2))
+                        if energy > 25:
                             self.last_activity_time = time.time()
                             await notch_bridge.set_state("listening")
 
                         await session.send_realtime_input(
-                            audio=types.Blob(data=chunk, mime_type="audio/pcm;rate=16000")
+                            audio=types.Blob(data=pcm_boosted.tobytes(), mime_type="audio/pcm;rate=16000")
                         )
                 except queue.Empty:
                     continue

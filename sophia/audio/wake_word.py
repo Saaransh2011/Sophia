@@ -13,6 +13,8 @@ import random
 from pathlib import Path
 from typing import Callable, Optional
 
+import subprocess
+import numpy as np
 import sounddevice as sd
 from vosk import KaldiRecognizer, Model
 
@@ -86,7 +88,25 @@ class NeuralWakeWordListener:
         """Continuous background audio stream capturing 16kHz PCM frames."""
         def callback(indata, frames, time_info, status):
             if self.is_listening:
-                audio_queue.put(bytes(indata))
+                raw = bytes(indata)
+                pcm = np.frombuffer(raw, dtype=np.int16)
+                max_val = np.max(np.abs(pcm))
+                if 0 < max_val < 6000:
+                    gain = min(4.5, 15000.0 / max(max_val, 100))
+                    boosted = np.clip(pcm.astype(np.float32) * gain, -32768, 32767).astype(np.int16)
+                    audio_queue.put(boosted.tobytes())
+                else:
+                    audio_queue.put(raw)
+
+        # Auto-adjust input volume if attenuated
+        try:
+            res = subprocess.run(["osascript", "-e", "input volume of (get volume settings)"], capture_output=True, text=True)
+            vol = int(res.stdout.strip()) if res.stdout.strip().isdigit() else 0
+            if vol < 75:
+                subprocess.run(["osascript", "-e", "set volume input volume 85"], capture_output=True)
+                logger.info("Optimized macOS input volume to 85%% (was %d%%) for AirPods/Mic.", vol)
+        except Exception:
+            pass
 
         with sd.RawInputStream(
             samplerate=self.sample_rate,
