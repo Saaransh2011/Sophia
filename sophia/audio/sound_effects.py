@@ -44,7 +44,7 @@ class SoundEffects:
         Speaks text using Google Cloud's premier Journey neural voice (en-US-Journey-F).
         Falls back to macOS native speech synthesizer if offline.
         """
-        logger.info("Sophia vocalizing: %s", text)
+        logger.info("Sarah vocalizing: %s", text)
         tts_audio = await cls._synthesize_google_tts(text)
         if tts_audio and tts_audio.exists():
             try:

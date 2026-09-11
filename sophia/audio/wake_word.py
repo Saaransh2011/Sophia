@@ -43,9 +43,9 @@ class NeuralWakeWordListener:
                 logger.error("Vosk model not found at %s", self.model_path)
                 return False
             self._model = Model(str(self.model_path))
-            # Constrain decoding grammar exclusively to "sophia" and "[unk]" (background ambient sink)
-            self._recognizer = KaldiRecognizer(self._model, self.sample_rate, "[\"sophia\", \"[unk]\"]")
-            logger.info("Neural acoustic wake-word engine initialized for 'Sophia'.")
+            # Constrain decoding grammar exclusively to "sarah", "sara", and "[unk]" (background ambient sink)
+            self._recognizer = KaldiRecognizer(self._model, self.sample_rate, "[\"sarah\", \"sara\", \"[unk]\"]")
+            logger.info("Neural acoustic wake-word engine initialized for 'Sarah'.")
         return True
 
     async def trigger_wake(self, source: str = "neural_acoustic_spotter"):
@@ -106,7 +106,7 @@ class NeuralWakeWordListener:
         # Run mic capture in executor thread
         loop.run_in_executor(None, self._mic_audio_loop, audio_queue)
 
-        logger.info("Neural wake-word spotter is actively listening for 'Sophia'...")
+        logger.info("Neural wake-word spotter is actively listening for 'Sarah'...")
 
         while self.is_listening:
             try:
@@ -116,13 +116,15 @@ class NeuralWakeWordListener:
 
                 if self._recognizer.AcceptWaveform(data):
                     res = json.loads(self._recognizer.Result())
-                    if "sophia" in res.get("text", "").lower():
+                    text = res.get("text", "").lower()
+                    if "sarah" in text or "sara" in text:
                         await self.trigger_wake()
                         # Reset recognizer state after detection
                         self._recognizer.Reset()
                 else:
                     partial = json.loads(self._recognizer.PartialResult())
-                    if "sophia" in partial.get("partial", "").lower():
+                    partial_text = partial.get("partial", "").lower()
+                    if "sarah" in partial_text or "sara" in partial_text:
                         await self.trigger_wake()
                         self._recognizer.Reset()
 
@@ -154,7 +156,7 @@ class NeuralWakeWordListener:
         if self._task and not self._task.done():
             self._task.cancel()
         self._task = None
-        logger.info("Sophia Wake Word listener stopped.")
+        logger.info("Sarah Wake Word listener stopped.")
 
 
 # Singleton instance

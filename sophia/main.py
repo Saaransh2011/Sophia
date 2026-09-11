@@ -93,11 +93,11 @@ async def run_gcp_bootstrap(project_id: str, project_number: str | None = None):
 async def start_daemon():
     """Starts Sophia daemon with Dynamic Island and wake-word listener."""
     console.print("\n[bold magenta]==========================================[/bold magenta]")
-    console.print("[bold magenta]       SOPHIA AI ASSISTANT ONLINE         [/bold magenta]")
+    console.print("[bold magenta]        SARAH AI ASSISTANT ONLINE         [/bold magenta]")
     console.print("[bold magenta]==========================================[/bold magenta]\n")
     console.print("[cyan]Dynamic Island floating notch UI is active.[/cyan]")
-    console.print("[cyan]Say '[bold white]Sophia[/bold white]' to summon your personal assistant, or click the notch island to expand controls.[/cyan]")
-    console.print("[dim]Sophia stays on standby mute until summoned, keeping YouTube, calls, and music 100% free.[/dim]\n")
+    console.print("[cyan]Say '[bold white]Sarah[/bold white]' to summon your personal assistant, or click the notch island to expand controls.[/cyan]")
+    console.print("[dim]Sarah stays on standby mute until summoned, keeping YouTube, calls, and music 100% free.[/dim]\n")
 
     await sophia_agent.initialize()
 
@@ -184,7 +184,7 @@ async def execute_command(text: str):
     """Runs a single prompt through Sophia agent."""
     await sophia_agent.initialize()
     reply = await sophia_agent.process_user_input(text)
-    console.print(f"\n[bold cyan]Sophia:[/bold cyan] {reply}\n")
+    console.print(f"\n[bold cyan]Sarah:[/bold cyan] {reply}\n")
 
 
 def main():

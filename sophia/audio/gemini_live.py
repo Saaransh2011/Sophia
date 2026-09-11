@@ -45,7 +45,7 @@ class GeminiLiveSession:
         )
         system_instruction = (
             f"{SOPHIA_SYSTEM_PROMPT}\n\n"
-            "You are speaking live to your creator Saaransh through your native audio stream. "
+            "You are Sarah, speaking live to your creator Saaransh through your native audio stream. "
             f"Your voice persona is {self.voice_name}: {persona_desc}. "
             "Speak naturally and concisely, with real conversational inflection. "
             "Acknowledge prompts with affirmative grace ('Yes sir?', 'Right away, sir')."
@@ -117,10 +117,10 @@ class GeminiLiveSession:
                     break
             await notch_bridge.set_state("idle")
             await notch_bridge.set_status("Ready (Muted)")
-            logger.info("Sophia returned to standby mute. Audio channels 100% free.")
+            logger.info("Sarah returned to standby mute. Audio channels 100% free.")
 
     async def _idle_watcher(self):
-        """Watches for inactivity and automatically puts Sophia into standby mute to free audio."""
+        """Watches for inactivity and automatically puts Sarah into standby mute to free audio."""
         while self.is_running:
             await asyncio.sleep(1.0)
             if time.time() - self.last_activity_time > self.idle_timeout_seconds:

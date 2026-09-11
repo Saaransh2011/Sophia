@@ -15,7 +15,7 @@ public class DynamicIslandModel: ObservableObject {
 
     @Published public var state: AssistantState = .idle
     @Published public var isExpanded: Bool = false
-    @Published public var title: String = "Sophia"
+    @Published public var title: String = "Sarah"
     @Published public var statusText: String = "Ready"
     @Published public var transcript: String = ""
     @Published public var isMicMuted: Bool = false

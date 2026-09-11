@@ -18,7 +18,7 @@ public struct DynamicIslandView: View {
                             .frame(width: 9, height: 9)
                             .shadow(color: statusColor.opacity(0.8), radius: 5)
 
-                        Text("SOPHIA")
+                        Text("SARAH")
                             .font(.system(size: 12, weight: .bold, design: .rounded))
                             .foregroundColor(.white)
                             .tracking(1.1)

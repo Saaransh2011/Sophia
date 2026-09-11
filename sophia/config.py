@@ -41,7 +41,7 @@ class GCPConfig(BaseModel):
 
 
 class AudioConfig(BaseModel):
-    wake_word: str = "sophia"
+    wake_word: str = "sarah"
     sample_rate: int = 16000
     chunk_size: int = 512
     channels: int = 1
