@@ -64,6 +64,7 @@ class GeminiLiveSession:
         live_config = self._build_config()
 
         logger.info("Connecting to Gemini Live (%s) with voice '%s'...", self.model, self.voice_name)
+        await notch_bridge.connect()
         await notch_bridge.set_state("listening")
         await notch_bridge.set_status("Sophia Live: Connecting...")
 
