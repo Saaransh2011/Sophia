@@ -32,9 +32,10 @@ class NotchBridge:
     def find_overlay_binary(self) -> Optional[Path]:
         """Finds compiled Swift SophiaNotchOverlay executable."""
         candidates = [
+            Path(__file__).parent / "swift" / ".build" / "arm64-apple-macosx" / "release" / "SophiaNotchOverlay",
+            Path(__file__).parent / "swift" / ".build" / "release" / "SophiaNotchOverlay",
             Path(__file__).parent / "swift" / ".build" / "arm64-apple-macosx" / "debug" / "SophiaNotchOverlay",
             Path(__file__).parent / "swift" / ".build" / "debug" / "SophiaNotchOverlay",
-            Path(__file__).parent / "swift" / ".build" / "release" / "SophiaNotchOverlay",
         ]
         for p in candidates:
             if p.exists() and os.access(p, os.X_OK):
