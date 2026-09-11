@@ -25,8 +25,8 @@ SOCKET_PATH = SOPHIA_HOME / "sophia_notch.sock"
 
 
 class GCPConfig(BaseModel):
-    project_id: str = Field(default=os.environ.get("GCP_PROJECT_ID", ""))
-    project_number: str = Field(default=os.environ.get("GCP_PROJECT_NUMBER", ""))
+    project_id: str = Field(default=os.environ.get("GCP_PROJECT_ID", "thesophia"))
+    project_number: str = Field(default=os.environ.get("GCP_PROJECT_NUMBER", "1019792796386"))
     region: str = Field(default="us-central1")
     credentials_path: str = Field(
         default=os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", str(CREDENTIALS_DIR / "service_account.json"))
