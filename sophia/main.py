@@ -156,6 +156,12 @@ async def start_daemon():
                 await notch_bridge.set_status("Ready (Muted)")
                 logger.info("Microphone unmuted by user via Dynamic Island.")
 
+        elif event_type == "voice_changed":
+            new_voice = event.get("voice", "Aoede")
+            logger.info("Voice changed via Dynamic Island: %s", new_voice)
+            wake_listener.stop()
+            asyncio.create_task(gemini_live_session.switch_voice(new_voice))
+
         elif event_type == "vision_toggled":
             vision_active = event.get("isActive", True)
             logger.info("Screen vision toggled: %s", vision_active)

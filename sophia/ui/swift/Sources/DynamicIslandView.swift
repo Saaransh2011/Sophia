@@ -51,8 +51,21 @@ public struct DynamicIslandView: View {
                 .padding(.horizontal, 14)
                 .frame(height: 36)
                 .contentShape(Rectangle())
-                .onTapGesture {
-                    // Clicking the island unfolds or folds the controls!
+                .onTapGesture(count: 2) {
+                    // Double click: open up & expand, and switch agent voice persona!
+                    withAnimation(.spring(response: 0.36, dampingFraction: 0.82)) {
+                        model.isExpanded = true
+                        let newVoice = model.cycleVoice()
+                        model.statusText = "Voice: \(newVoice)"
+                    }
+                    IPCServer.shared.broadcastEvent([
+                        "event": "voice_changed",
+                        "voice": model.currentVoice,
+                        "isExpanded": true
+                    ])
+                }
+                .onTapGesture(count: 1) {
+                    // Single click: toggle unfold/fold
                     withAnimation(.spring(response: 0.36, dampingFraction: 0.82)) {
                         model.isExpanded.toggle()
                     }
@@ -100,18 +113,29 @@ public struct DynamicIslandView: View {
 
                         // Bottom Control Panel
                         HStack(spacing: 10) {
-                            // Model Tag
-                            HStack(spacing: 4) {
-                                Image(systemName: "sparkle")
-                                    .font(.system(size: 9))
-                                Text("Gemini 2.5 • Aoede")
-                                    .font(.system(size: 9, weight: .medium))
+                            // Model & Voice Tag (Clickable to switch voice)
+                            Button(action: {
+                                let newVoice = model.cycleVoice()
+                                model.statusText = "Voice: \(newVoice)"
+                                IPCServer.shared.broadcastEvent([
+                                    "event": "voice_changed",
+                                    "voice": newVoice,
+                                    "isExpanded": true
+                                ])
+                            }) {
+                                HStack(spacing: 4) {
+                                    Image(systemName: "sparkle")
+                                        .font(.system(size: 9))
+                                    Text("Gemini Live • \(model.currentVoice)")
+                                        .font(.system(size: 9, weight: .medium))
+                                }
+                                .padding(.horizontal, 7)
+                                .padding(.vertical, 3)
+                                .background(Color.white.opacity(0.12))
+                                .foregroundColor(.white.opacity(0.88))
+                                .cornerRadius(5)
                             }
-                            .padding(.horizontal, 7)
-                            .padding(.vertical, 3)
-                            .background(Color.white.opacity(0.1))
-                            .foregroundColor(.white.opacity(0.8))
-                            .cornerRadius(5)
+                            .buttonStyle(.plain)
 
                             Spacer()
 

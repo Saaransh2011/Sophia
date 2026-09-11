@@ -130,6 +130,10 @@ public class IPCServer {
                 model.isExpanded = true
             case "collapse":
                 model.isExpanded = false
+            case "set_voice":
+                if let voice = json["voice"] as? String {
+                    model.currentVoice = voice
+                }
             default:
                 break
             }

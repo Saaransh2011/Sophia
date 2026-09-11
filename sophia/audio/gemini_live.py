@@ -37,11 +37,16 @@ class GeminiLiveSession:
         self.idle_timeout_seconds = 12.0  # Auto-reverts to standby mute after 12s of idle
 
     def _build_config(self) -> types.LiveConnectConfig:
-        """Constructs configuration for low-latency native audio streaming with Aoede voice."""
+        """Constructs configuration for low-latency native audio streaming with Aoede/Kore voice."""
+        persona_desc = (
+            "breezy, charming, natural, confident, and warm"
+            if self.voice_name == "Aoede"
+            else "calm, poised, elegant, soothing, and sophisticated"
+        )
         system_instruction = (
             f"{SOPHIA_SYSTEM_PROMPT}\n\n"
             "You are speaking live to your creator Saaransh through your native audio stream. "
-            "Your voice is Aoede: charming, poised, elegant, confident, and warm. "
+            f"Your voice persona is {self.voice_name}: {persona_desc}. "
             "Speak naturally and concisely, with real conversational inflection. "
             "Acknowledge prompts with affirmative grace ('Yes sir?', 'Right away, sir')."
         )
@@ -240,6 +245,21 @@ class GeminiLiveSession:
 
     def stop(self):
         self.is_running = False
+
+    async def switch_voice(self, new_voice: str):
+        """Switches voice persona and activates Gemini Live in the new voice."""
+        self.voice_name = new_voice
+        config.gcp.live_voice_name = new_voice
+        logger.info("Switched Gemini Live voice to: %s", new_voice)
+
+        if self.is_running:
+            self.stop()
+            await asyncio.sleep(0.3)
+
+        # Launch live session speaking in the new voice!
+        await self.start_session(
+            initial_prompt=f"Acknowledge in one short charming sentence that you are now speaking with your {new_voice} voice persona."
+        )
 
 
 # Singleton instance

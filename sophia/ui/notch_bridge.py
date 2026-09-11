@@ -110,6 +110,10 @@ class NotchBridge:
     async def collapse(self):
         await self._send({"action": "collapse"})
 
+    async def set_voice(self, voice: str):
+        """Updates active voice persona shown in the island"""
+        await self._send({"action": "set_voice", "voice": voice})
+
     def register_callback(self, callback: Callable[[Dict[str, Any]], None]):
         self.event_callbacks.append(callback)
 
