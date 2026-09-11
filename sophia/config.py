@@ -31,9 +31,12 @@ class GCPConfig(BaseModel):
     credentials_path: str = Field(
         default=os.environ.get("GOOGLE_APPLICATION_CREDENTIALS", str(CREDENTIALS_DIR / "service_account.json"))
     )
-    gemini_model: str = Field(default="gemini-2.5-flash")
-    live_model: str = Field(default="gemini-2.0-flash-exp")
-    voice_name: str = Field(default="Aoede")  # Charming, natural, confident female tone
+    gemini_model: str = Field(default="gemini-2.5-pro")
+    gemini_flash_model: str = Field(default="gemini-2.5-flash")
+    live_model: str = Field(default="gemini-2.5-pro")
+    tts_voice_name: str = Field(default="en-US-Journey-F")  # Google Cloud premier conversational neural voice
+    tts_language_code: str = Field(default="en-US")
+    voice_name: str = Field(default="Aoede")
 
 
 class AudioConfig(BaseModel):

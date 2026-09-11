@@ -142,21 +142,13 @@ print(f"[Sophia] Rocket model successfully built and saved to {output_path}")
         return reply
 
     async def _generate_gemini_reply(self, user_prompt: str) -> str:
-        """Generates conversational response using Gemini."""
+        """Generates conversational response using Gemini 2.5 Pro multi-turn session."""
         try:
-            from sophia.config import get_genai_client
-            client = get_genai_client()
-            response = client.models.generate_content(
-                model=config.gcp.gemini_model,
-                contents=[
-                    f"System: {self.system_prompt}",
-                    f"User: {user_prompt}",
-                ]
-            )
-            return response.text.strip()
+            from sophia.core.conversational_engine import conversational_engine
+            return await conversational_engine.send_message(user_prompt)
         except Exception as e:
-            logger.error("Gemini generation failed: %s", e)
-            return f"Yes sir. I am currently operating locally. (GCP response note: {e})"
+            logger.error("Gemini conversational generation failed: %s", e)
+            return f"Yes sir. (GCP response note: {e})"
 
     async def _respond(self, reply_text: str):
         """Displays response in Dynamic Island and delivers vocal speech."""
