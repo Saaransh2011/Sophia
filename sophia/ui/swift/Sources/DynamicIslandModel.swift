@@ -21,16 +21,15 @@ public class DynamicIslandModel: ObservableObject {
     @Published public var isMicMuted: Bool = false
     @Published public var isScreenVisionActive: Bool = true
     @Published public var audioLevel: CGFloat = 0.3
-    @Published public var currentVoice: String = "Aoede"
+    @Published public var currentVoice: String = "Kore"
 
-    public let availableVoices = ["Aoede", "Kore", "Fenrir", "Puck", "Charon"]
+    public let availableVoices = ["Kore", "Aoede", "Fenrir", "Charon"]
 
     public func cycleVoice() -> String {
-        // Cycles primarily between Google's beautiful female voices (Aoede <-> Kore)
-        if currentVoice == "Aoede" {
-            currentVoice = "Kore"
+        if let idx = availableVoices.firstIndex(of: currentVoice) {
+            currentVoice = availableVoices[(idx + 1) % availableVoices.count]
         } else {
-            currentVoice = "Aoede"
+            currentVoice = "Kore"
         }
         return currentVoice
     }

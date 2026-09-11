@@ -7,7 +7,7 @@ public class NotchWindow: NSPanel {
 
     public init() {
         super.init(
-            contentRect: NSRect(x: 0, y: 0, width: 240, height: 38),
+            contentRect: NSRect(x: 0, y: 0, width: 420, height: 36),
             styleMask: [.borderless, .nonactivatingPanel],
             backing: .buffered,
             defer: false
@@ -39,8 +39,8 @@ public class NotchWindow: NSPanel {
         guard let screen = NSScreen.main else { return }
 
         let screenFrame = screen.frame
-        let targetWidth: CGFloat = expanded ? 440 : 250
-        let targetHeight: CGFloat = expanded ? 175 : 38
+        let targetWidth: CGFloat = expanded ? 520 : 420
+        let targetHeight: CGFloat = expanded ? 200 : 36
 
         // Calculate center X (directly aligned with MacBook notch/camera)
         let targetX = screenFrame.origin.x + (screenFrame.width - targetWidth) / 2.0
@@ -51,7 +51,7 @@ public class NotchWindow: NSPanel {
 
         if animated {
             NSAnimationContext.runAnimationGroup { context in
-                context.duration = 0.35
+                context.duration = 0.32
                 context.timingFunction = CAMediaTimingFunction(name: .easeInEaseOut)
                 self.animator().setFrame(targetFrame, display: true)
             }

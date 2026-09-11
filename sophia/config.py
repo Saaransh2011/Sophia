@@ -36,8 +36,8 @@ class GCPConfig(BaseModel):
     live_model: str = Field(default="gemini-live-2.5-flash-native-audio")
     tts_voice_name: str = Field(default="en-US-Journey-F")
     tts_language_code: str = Field(default="en-US")
-    voice_name: str = Field(default="Aoede")  # Beautiful, charming, poised female voice
-    live_voice_name: str = Field(default="Aoede")
+    voice_name: str = Field(default="Kore")  # Beautiful, soothing, articulate, and poised female voice
+    live_voice_name: str = Field(default="Kore")
 
 
 class AudioConfig(BaseModel):
@@ -62,10 +62,10 @@ class UTMConfig(BaseModel):
 
 class UIConfig(BaseModel):
     socket_path: str = str(SOCKET_PATH)
-    island_width_collapsed: float = 160.0
-    island_height_collapsed: float = 34.0
-    island_width_expanded: float = 380.0
-    island_height_expanded: float = 120.0
+    island_width_collapsed: float = 420.0
+    island_height_collapsed: float = 36.0
+    island_width_expanded: float = 520.0
+    island_height_expanded: float = 200.0
     notch_corner_radius: float = 18.0
     show_waveform: bool = True
 
